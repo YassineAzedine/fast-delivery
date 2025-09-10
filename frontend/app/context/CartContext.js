@@ -17,18 +17,25 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
-        );
-      } else {
-        return [...prevCart, { ...product, qty: 1 }];
-      }
-    });
-  };
+const addToCart = (product) => {
+  // On cherche si le même produit avec exactement les mêmes options existe déjà
+  const existingIndex = cart.findIndex(
+    (item) =>
+      item.id === product.id &&
+      JSON.stringify(item.options || []) === JSON.stringify(product.options || [])
+  );
+
+  if (existingIndex !== -1) {
+    // On augmente la quantité si combinaison existante
+    const updatedCart = [...cart];
+    updatedCart[existingIndex].qty += product.qty || 1;
+    setCart(updatedCart);
+  } else {
+    // Sinon on ajoute un nouvel objet
+    setCart([...cart, { ...product, qty: product.qty || 1 }]);
+  }
+};
+
   const updateQty = (id, qty) => {
   setCart((prevCart) =>
     prevCart.map((item) =>

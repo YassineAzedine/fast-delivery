@@ -10,6 +10,26 @@ export default function ProductsPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState("all");
   const [searchText, setSearchText] = useState("");
 
+  // --- Popup state ---
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [options, setOptions] = useState([]);
+
+  const toggleOption = (option) => {
+    setOptions((prev) =>
+      prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]
+    );
+  };
+
+  const confirmAddToCart = () => {
+    if (selectedProduct) {
+      addToCart({ ...selectedProduct, options });
+      setShowPopup(false);
+      setOptions([]);
+      setSelectedProduct(null);
+    }
+  };
+
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
@@ -58,6 +78,8 @@ export default function ProductsPage() {
         { name: "Salad", icon: "fas fa-leaf" },
       ] 
     },
+
+    
     { 
       name: "Drinks", 
       icon: "fas fa-coffee", 
@@ -68,54 +90,73 @@ export default function ProductsPage() {
     },
   ];
 
-const products = [
-  {
-    id: 1,
-    name: "بيتزا مارغريتا",
-    category: "Food",
-    subcategory: "Pizza",
-    desc: "بيتزا إيطالية أصلية بجبن الموزاريلا.",
-    price: 80,
-    image: "https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: 2,
-    name: "برغر كلاسيك",
-    category: "Food",
-    subcategory: "Burger",
-    desc: "لحم طازج مع خبز محمص وخضروات.",
-    price: 60,
-    image: "https://images.pexels.com/photos/1639566/pexels-photo-1639566.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: 3,
-    name: "سلطة صحية",
-    category: "Food",
-    subcategory: "Salad",
-    desc: "خضروات طازجة مع صوص مميز.",
-    price: 40,
-    image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: 4,
-    name: "مشروب غازي",
-    category: "Drinks",
-    subcategory: "Soft Drink",
-    desc: "مشروب بارد منعش.",
-    price: 15,
-    image: "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    id: 5,
-    name: "عصير برتقال",
-    category: "Drinks",
-    subcategory: "Juice",
-    desc: "عصير طبيعي منعش.",
-    price: 20,
-    image: "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-];
+  const products = [
+    {
+      id: 1,
+      name: "بيتزا مارغريتا",
+      category: "Food",
+      subcategory: "Pizza",
+      desc: "بيتزا إيطالية أصلية بجبن الموزاريلا.",
+      price: 80,
+      image: "https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: ["إضافة جبن", "زيتون", "فلفل حار"],
 
+    },
+    {
+      id: 2,
+      name: "برغر كلاسيك",
+      category: "Food",
+      subcategory: "Burger",
+      desc: "لحم طازج مع خبز محمص وخضروات.",
+      price: 60,
+      image: "https://images.pexels.com/photos/1639566/pexels-photo-1639566.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: [],
+
+    },
+    {
+      id: 3,
+      name: "سلطة صحية",
+      category: "Food",
+      subcategory: "Salad",
+      desc: "خضروات طازجة مع صوص مميز.",
+      price: 40,
+      image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: [],
+
+    },
+    {
+      id: 4,
+      name: "مشروب غازي",
+      category: "Drinks",
+      subcategory: "Soft Drink",
+      desc: "مشروب بارد منعش.",
+      price: 15,
+      image: "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: [],
+
+    },
+    {
+      id: 5,
+      name: "عصير برتقال",
+      category: "Drinks",
+      subcategory: "Juice",
+      desc: "عصير طبيعي منعش.",
+      price: 20,
+      image: "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: [],
+
+    },
+        {
+      id: 6,
+      name: "تاكوس",
+      category: "Food",
+      subcategory: "Tacos",
+      desc: "تاكوس لذيذ مع خيارات الصوص.",
+      price: 50,
+      image: "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=800",
+      options: ["صوص ألجيري", "صوص بيغي"],
+    },
+  ];
 
   const filteredProducts = products
     .filter(p => selectedCategory === "all" || p.category === selectedCategory)
@@ -132,8 +173,8 @@ const products = [
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/20 backdrop-blur-lg flex justify-between items-center px-6 py-4 shadow-md">
         <Link href="/order" className="text-white px-4 py-2 hover:underline">
-  طلباتي
-</Link>
+          طلباتي
+        </Link>
         <Link href="/cart" className="relative">
           <i className="fas fa-shopping-cart text-white text-2xl"></i>
           {cart.length > 0 && (
@@ -142,15 +183,16 @@ const products = [
             </span>
           )}
         </Link>
-        
       </nav>
-<div className="flex justify-start px-6 pt-28 mb-4">
-  <Link href="/">
-    <button className="px-4 py-2 bg-white/20 text-white rounded-full hover:bg-white/30 transition flex items-center gap-2">
-      <i className="fas fa-arrow-left"></i> العودة
-    </button>
-  </Link>
-</div>
+
+      <div className="flex justify-start px-6 pt-28 mb-4">
+        <Link href="/">
+          <button className="px-4 py-2 bg-white/20 text-white rounded-full hover:bg-white/30 transition flex items-center gap-2">
+            <i className="fas fa-arrow-left"></i> العودة
+          </button>
+        </Link>
+      </div>
+
       {/* Header */}
       <header className="text-center pt-28 pb-10">
         <h1 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-6">
@@ -226,15 +268,65 @@ const products = [
             <h3 className="text-2xl font-bold text-white mb-2">{product.name}</h3>
             <p className="text-white/80 mb-4">{product.desc}</p>
             <p className="text-xl font-semibold text-teal-300 mb-4">{product.price} درهم</p>
-            <button
-              onClick={() => addToCart(product)}
-              className="px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-md hover:shadow-red-500/50 transition-all duration-300"
-            >
-              أضف إلى السلة
-            </button>
+           <button
+  onClick={() => {
+    if (product.options && product.options.length > 0) {
+      setSelectedProduct(product);
+      setShowPopup(true);
+    } else {
+      addToCart({ ...product, options: [] }); // يضيف مباشرة للسلة
+    }
+  }}
+  className="px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold shadow-md hover:shadow-red-500/50 transition-all duration-300"
+>
+  أضف إلى السلة
+</button>
+
+
           </div>
         ))}
       </main>
+
+      {/* Popup for options */}
+      {showPopup && selectedProduct && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-96 text-center relative">
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-red-500"
+            >
+              ✖
+            </button>
+            <h2 className="text-xl font-bold mb-4">
+              اختر الإضافات لـ {selectedProduct.name}
+            </h2>
+            <div className="flex flex-col gap-2 text-right">
+              {selectedProduct.options && selectedProduct.options.length > 0 ? (
+  selectedProduct.options.map((option) => (
+    <label key={option} className="flex items-center gap-2">  
+      <input
+        type="checkbox"
+        checked={options.includes(option)}
+        onChange={() => toggleOption(option)}     
+        className="form-checkbox h-5 w-5 text-red-500"
+        required
+      />
+      <span className="text-gray-700">{option}</span>
+    </label>
+  ))
+) : (
+  <p className="text-gray-500">لا توجد إضافات متاحة لهذا المنتج.</p>
+)}
+            </div>
+            <button
+              onClick={confirmAddToCart}
+              className="mt-6 px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+            >
+              تأكيد
+            </button>
+          </div>
+        </div>
+      )}
 
       <footer className="mt-16 text-center text-white/70 text-lg p-8">
         <p>&copy; 2025 جميع الحقوق محفوظة.</p>
