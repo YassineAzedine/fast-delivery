@@ -18,22 +18,8 @@ export function CartProvider({ children }) {
   }, [cart]);
 
 const addToCart = (product) => {
-  // On cherche si le même produit avec exactement les mêmes options existe déjà
-  const existingIndex = cart.findIndex(
-    (item) =>
-      item.id === product.id &&
-      JSON.stringify(item.options || []) === JSON.stringify(product.options || [])
-  );
-
-  if (existingIndex !== -1) {
-    // On augmente la quantité si combinaison existante
-    const updatedCart = [...cart];
-    updatedCart[existingIndex].qty += product.qty || 1;
-    setCart(updatedCart);
-  } else {
-    // Sinon on ajoute un nouvel objet
-    setCart([...cart, { ...product, qty: product.qty || 1 }]);
-  }
+  // On ajoute simplement le produit dans le panier
+  setCart([...cart, { ...product, qty: 1 }]);
 };
 
   const updateQty = (id, qty) => {

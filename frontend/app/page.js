@@ -176,13 +176,14 @@ export default function AdvancedDeliveryLanding() {
   </div>
 
   <div className="flex flex-col sm:flex-row gap-6 justify-center mt-8">
-    <button 
-      className="px-8 py-4 rounded-full font-semibold text-lg bg-gradient-to-r from-red-500 to-red-600 text-white shadow-2xl shadow-red-500/40 hover:shadow-red-500/60 hover:-translate-y-1 transition-all duration-300 shimmer-effect relative overflow-hidden z-10"
-      onClick={() => window.location.href = '/home'}
-    >
-      <i className="fas fa-shopping-cart ml-2"></i>
-      Voir les produits
-    </button>
+     <button
+  
+    onClick={() => window.location.href = '/restaurants'}
+    className="px-8 py-4 rounded-full font-semibold text-lg bg-gradient-to-r from-red-500 to-red-600 text-white shadow-2xl shadow-red-500/40 hover:shadow-red-500/60 hover:-translate-y-1 transition-all duration-300 shimmer-effect relative overflow-hidden z-10"
+  >
+   <i className="fas fa-store ml-2 text-white"></i>
+    Voir les restaurants
+  </button>
     <button 
       className="px-8 py-4 rounded-full font-semibold text-lg bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/30 hover:-translate-y-1 transition-all duration-300 shimmer-effect relative overflow-hidden z-10"
       onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
