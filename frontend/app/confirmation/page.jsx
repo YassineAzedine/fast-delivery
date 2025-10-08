@@ -13,7 +13,7 @@ export default function ConfirmationPage() {
 
   const handleBackHome = () => {
     clearCart();
-    router.push("/");
+    router.push("/order");
   };
 
   // Faire disparaître l'animation après 2 secondes
@@ -47,12 +47,12 @@ export default function ConfirmationPage() {
 
         <p className="text-xl font-bold text-teal-300 mb-6">المجموع الكلي: {total.toFixed(2)} درهم</p>
 
-        <button
-          onClick={handleBackHome}
-          className="px-8 py-3 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full font-bold shadow-xl transition-all duration-300 transform hover:scale-105"
-        >
-          العودة للرئيسية
-        </button>
+       <button
+  onClick={handleBackHome}
+  className="px-8 py-3 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full font-bold shadow-xl transition-all duration-300 transform hover:scale-105"
+>
+  عرض الطلبات 📦
+</button>
       </div>
     </div>
   );

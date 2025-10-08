@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function CheckoutPage() {
   const { cart, clearCart } = useContext(CartContext);
   const router = useRouter();
-
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,19 +23,51 @@ export default function CheckoutPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (cart.length === 0) {
       alert("السلة فارغة!");
       return;
     }
 
-    // Ici tu peux envoyer les données au backend ou gérer le paiement en ligne
-    console.log("Commande confirmée :", { formData, paymentMethod, cart });
+    try {
+      // Envoi de la commande au backend
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: formData.firstName,
+          customerPhone: formData.phone,
+          items: cart.map(item => item.name),
+          paymentMethod,
+        }),
+      });
 
-    clearCart();
-    router.push("/confirmation");
+      const data = await response.json();
+
+        console.log(formData);
+      if (data.success) {
+          setMessage(`✅ Commande envoyée au livreur : ${data.driver}`);
+    localStorage.setItem("customer", JSON.stringify({
+          customerName: formData.firstName,
+          customerPhone: formData.phone,
+          items: cart.map(item => item.name),
+          paymentMethod,
+        })); // stocker le livreur si besoin
+        clearCart();
+          
+        setTimeout(() => router.push("/confirmation"), 1500);
+        
+      } else {
+        alert("❌ Erreur lors de l'envoi de la commande");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Une erreur est survenue, réessayez.");
+    }
   };
+
 
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
@@ -72,6 +104,10 @@ export default function CheckoutPage() {
 
             {/* Formulaire utilisateur */}
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Affichage du message */}
+      {message && (
+        <p className="mt-4 text-center font-semibold text-yellow-400">{message}</p>
+      )}
               {/* Nom */}
               <div className="relative">
                 <input
@@ -105,7 +141,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Méthode de paiement */}
-              <div className="flex gap-6 mt-2 text-yellow-400 font-semibold">
+              {/* <div className="flex gap-6 mt-2 text-yellow-400 font-semibold">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
@@ -128,7 +164,7 @@ export default function CheckoutPage() {
                   />
                   الدفع أونلاين
                 </label>
-              </div>
+              </div> */}
 
               {/* Formulaire carte si paiement en ligne */}
               {paymentMethod === "online" && (
