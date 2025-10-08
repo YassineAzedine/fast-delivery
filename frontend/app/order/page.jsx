@@ -99,9 +99,9 @@ export default function OrdersPage() {
 
             <p className="mb-2">رقم الهاتف: {order.customerPhone}</p>
 
-            {/* <Link href={`/order/${order._id}`} className="px-4 py-2 bg-teal-400 rounded-full hover:bg-teal-500 transition">
+            <Link href={`/order/${order._id}`} className="px-4 py-2 bg-teal-400 rounded-full hover:bg-teal-500 transition">
               التفاصيل
-            </Link> */}
+            </Link>
           </div>
         ))}
       </div>
