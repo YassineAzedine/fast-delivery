@@ -52,10 +52,12 @@ export default function OrdersPage() {
 
         {orders.map(order => (
           <div key={order._id} className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 p-6 shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4">طلب رقم 
-
-             <p>#{order._id}</p>
-            </h2>
+          <h2 className="text-2xl font-semibold mb-2">
+  طلب رقم
+</h2>
+<p className="text-sm text-gray-600 mb-4">
+  #{order._id}
+</p>
 
             <ul className="mb-4 space-y-2">
               {order.items.map((item, idx) => (
