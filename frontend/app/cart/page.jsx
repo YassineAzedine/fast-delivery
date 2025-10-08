@@ -75,6 +75,9 @@ export default function CartPage() {
       router.push("/checkout");
     }, 2000);
   };
+    const goToRestaurant = () => {
+    router.push("/"); // ← ici la route cible
+  };
 
   return (
     <div className="min-h-screen overflow-x-hidden relative bg-black/90" dir="rtl">
@@ -88,15 +91,13 @@ export default function CartPage() {
         {/* Header */}
         <div className="bg-black/60 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl mb-8">
           <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-3 px-6 py-3 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 rounded-full transition-all duration-300 transform hover:scale-105 border border-yellow-400/30"
-            >
-              <span className="text-xl">←</span>
-              <span className="font-medium">العودة للمنتجات</span>
-              {/* <span className="font-medium">العودة للمنتجات</span> */}
-              
-            </button>
+             <button
+      onClick={goToRestaurant}
+      className="flex items-center gap-3 px-6 py-3 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-400 rounded-full transition-all duration-300 transform hover:scale-105 border border-yellow-400/30"
+    >
+      <span className="text-xl">←</span>
+      <span className="font-medium">العودة للمنتجات</span>
+    </button>
             {cart.length > 0 && (
               <div className="text-yellow-400/80 text-sm bg-yellow-400/10 px-4 py-2 rounded-full">
                 {cart.length} عنصر في السلة
