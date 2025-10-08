@@ -30,51 +30,63 @@ export default function CheckoutPage() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+// Supprimer le message après 5 secondes
+setTimeout(() => {
+  setMessage("");
+}, 10000);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
- const handleSubmit = async (e) => {
-    e.preventDefault();
+  if (cart.length === 0) {
+    setMessage("❌ La commande est vide !");
+    return;
+  }
 
-    if (cart.length === 0) {
-      alert("السلة فارغة!");
-      return;
-    }
+  try {
+    const response = await fetch("/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customerName: formData.firstName,
+        customerPhone: formData.phone,
+        items: cart.map(item => item.name),
+        paymentMethod,
+      }),
+    });
 
-    try {
-      // Envoi de la commande au backend
-      const response = await fetch("/api/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+    const data = await response.json();
+
+    console.log("FormData envoyé :", formData);
+    console.log("Réponse du serveur :", data);
+
+    if (data.success) {
+      setMessage(`✅ Commande envoyée au livreur : ${data.driver}`);
+      localStorage.setItem(
+        "customer",
+        JSON.stringify({
           customerName: formData.firstName,
           customerPhone: formData.phone,
           items: cart.map(item => item.name),
           paymentMethod,
-        }),
-      });
-
-      const data = await response.json();
-
-        console.log(formData);
-      if (data.success) {
-          setMessage(`✅ Commande envoyée au livreur : ${data.driver}`);
-    localStorage.setItem("customer", JSON.stringify({
-          customerName: formData.firstName,
-          customerPhone: formData.phone,
-          items: cart.map(item => item.name),
-          paymentMethod,
-        })); // stocker le livreur si besoin
-        clearCart();
-          
-        setTimeout(() => router.push("/confirmation"), 1500);
-        
-      } else {
-        alert("❌ Erreur lors de l'envoi de la commande");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("❌ Une erreur est survenue, réessayez.");
+        })
+      );
+      clearCart();
+      setTimeout(() => router.push("/confirmation"), 1500);
+    } else {
+      // Message professionnel pour le client
+      setMessage(
+        "❌ Une erreur est survenue lors de l’envoi de votre commande. " +
+        "Veuillez contacter notre équipe technique si le problème persiste."
+      );
     }
-  };
+  } catch (err) {
+    console.error("Erreur catch :", err);
+    setMessage(
+      "❌ Une erreur technique est survenue. " +
+      "Veuillez contacter notre équipe technique pour assistance."
+    );
+  }
+};
 
 
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -113,9 +125,13 @@ export default function CheckoutPage() {
             {/* Formulaire utilisateur */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Affichage du message */}
-      {message && (
-        <p className="mt-4 text-center font-semibold text-yellow-400">{message}</p>
-      )}
+     {message && (
+  <div className="mb-4 p-3 rounded-lg text-white font-semibold
+                  bg-red-500 border border-red-600 text-center">
+    {message}
+  </div>
+)}
+
       {/* Nom */}
 <div className="mb-4">
   <label className="block mb-1 text-gray-100 font-medium">الاسم</label>
