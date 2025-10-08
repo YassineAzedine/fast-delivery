@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState , useEffect} from "react";
 import { CartContext } from "../context/CartContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,11 +12,19 @@ export default function CheckoutPage() {
     firstName: "",
     lastName: "",
     phone: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
+  
   });
-
+  // 🔹 Vérifie localStorage au chargement et pré-remplit le formulaire
+  useEffect(() => {
+    const storedCustomer = localStorage.getItem("customer");
+    if (storedCustomer) {
+      const customer = JSON.parse(storedCustomer);
+      setFormData({
+        firstName: customer.customerName || "",
+        phone: customer.customerPhone || "",
+      });
+    }
+  }, []);
   const [paymentMethod, setPaymentMethod] = useState("cash");
 
   const handleChange = (e) => {
@@ -72,8 +80,8 @@ export default function CheckoutPage() {
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black p-8" dir="rtl">
-      <div className="max-w-2xl mx-auto bg-black/60 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-black p-8" dir="rtl">
+      <div className="max-w-2xl mx-auto bg-black/40 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl">
         
         {/* Bouton retour */}
         <div className="flex justify-start mb-4">
@@ -108,37 +116,33 @@ export default function CheckoutPage() {
       {message && (
         <p className="mt-4 text-center font-semibold text-yellow-400">{message}</p>
       )}
-              {/* Nom */}
-              <div className="relative">
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder=" "
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  className="peer w-full px-4 py-3 rounded-xl bg-white/20 text-black placeholder-transparent focus:outline-none focus:ring-2 focus:ring-teal-400 transition"
-                />
-                <label className="absolute left-4 top-3 text-yellow-400/70 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-yellow-400/70 peer-placeholder-shown:text-base peer-focus:top-[-8px] peer-focus:text-sm peer-focus:text-teal-400">
-                  الاسم
-                </label>
-              </div>
+      {/* Nom */}
+<div className="mb-4">
+  <label className="block mb-1 text-gray-100 font-medium">الاسم</label>
+  <input
+    type="text"
+    name="firstName"
+    placeholder="ادخل الاسم"
+    value={formData.firstName}
+    onChange={handleChange}
+    required
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+  />
+</div>
 
-              {/* رقم الهاتف */}
-              <div className="relative">
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder=" "
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="peer w-full px-4 py-3 rounded-xl bg-white/20 text-black placeholder-transparent focus:outline-none focus:ring-2 focus:ring-teal-400 transition"
-                />
-                <label className="absolute left-4 top-3 text-yellow-400/70 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-yellow-400/70 peer-placeholder-shown:text-base peer-focus:top-[-8px] peer-focus:text-sm peer-focus:text-teal-400">
-                  رقم الهاتف
-                </label>
-              </div>
+{/* رقم الهاتف */}
+<div className="mb-4">
+  <label className="block mb-1 text-gray-100 font-medium">رقم الهاتف</label>
+  <input
+    type="tel"
+    name="phone"
+    placeholder="ادخل رقم الهاتف"
+    value={formData.phone}
+    onChange={handleChange}
+    required
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+  />
+</div>
 
               {/* Méthode de paiement */}
               {/* <div className="flex gap-6 mt-2 text-yellow-400 font-semibold">
@@ -167,7 +171,7 @@ export default function CheckoutPage() {
               </div> */}
 
               {/* Formulaire carte si paiement en ligne */}
-              {paymentMethod === "online" && (
+              {/* {paymentMethod === "online" && (
                 <div className="space-y-4 mt-4">
                   <div className="relative">
                     <input
@@ -214,7 +218,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               <button
                 type="submit"
